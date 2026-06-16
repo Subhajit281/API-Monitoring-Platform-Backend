@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+
+# Environment Variables
+.env
+.env.local
+.env.development
+.env.production
+
+# Prisma Generated Client
+src/generated/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime Data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+
+# Build Output
+dist/
+build/
+
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
+
+# VS Code
+.vscode/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Temporary Files
+tmp/
+temp/
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Testing
+.nyc_output/
+
+# Generated Files
+*.tgz
