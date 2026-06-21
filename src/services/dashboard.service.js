@@ -1,8 +1,7 @@
 const prisma = require('../config/prisma');
-const AppError = require("../utils/AppError");
 
 const getOverview = async (userId) => {
-    // 1. Run all database metrics and relational queries concurrently using Promise.all
+    // 1. Run all database queries concurrently using Promise.all
     const [
         totalProjects,
         totalMonitors,
@@ -20,14 +19,14 @@ const getOverview = async (userId) => {
             where: { userId },
             include: {
                 _count: {
-                    select: { monitors: true } // Native Prisma count optimization to prevent N+1 query overhead
+                    select: { monitors: true } // Sub-count optimization
                 }
             },
             orderBy: { createdAt: "desc" }
         })
     ]);
 
-    // 2. Format database results into clean items for your React layout components
+    // 2. Map structural database results for the frontend grid matrix
     const projects = projectsData.map(project => ({
         id: project.id,
         name: project.name,
@@ -37,7 +36,7 @@ const getOverview = async (userId) => {
         status: project._count.monitors > 0 ? "Active" : "Draft"
     }));
 
-    // 3. Return the exact unified payload contract your frontend Dashboard expects
+    // 3. Return the payload contract structured for the frontend
     return {
         stats: {
             totalProjects,
@@ -50,6 +49,7 @@ const getOverview = async (userId) => {
     };
 };
 
+// Exporting using 'getOverview' to align with dashboard.controller.js
 module.exports = {
     getOverview
 };
