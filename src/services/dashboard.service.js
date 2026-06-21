@@ -1,32 +1,76 @@
 const prisma = require('../config/prisma');
+const AppError = require("../utils/AppError");
 
-const getOverview = async (userId) => {
-    // 1. Run all database queries concurrently using Promise.all
-    const [
-        totalProjects,
-        totalMonitors,
-        activeIncidents,
-        resolvedIncidents,
-        totalChecks,
-        projectsData
-    ] = await Promise.all([
-        prisma.project.count({ where: { userId } }),
-        prisma.monitor.count({ where: { project: { userId } } }),
-        prisma.incident.count({ where: { status: 'OPEN', monitor: { project: { userId } } } }),
-        prisma.incident.count({ where: { status: 'RESOLVED', monitor: { project: { userId } } } }),
-        prisma.checkResult.count({ where: { monitor: { project: { userId } } } }),
-        prisma.project.findMany({
-            where: { userId },
-            include: {
-                _count: {
-                    select: { monitors: true } // Sub-count optimization
+const getOverview = async(userId) => {
+
+    const totalProjects =
+    await prisma.project.count({
+        where:{
+            userId
+        }
+    });
+
+    const totalMonitors =
+    await prisma.monitor.count({
+        where:{
+            project:{
+                userId
+            }
+        }
+    });
+
+    const activeIncidents =
+    await prisma.incident.count({
+        where:{
+            status:'OPEN',
+            monitor:{
+                project:{
+                    userId
                 }
-            },
-            orderBy: { createdAt: "desc" }
-        })
-    ]);
+            }
+        }
+    });
 
-    // 2. Map structural database results for the frontend grid matrix
+    const resolvedIncidents =
+    await prisma.incident.count({
+        where:{
+            status:'RESOLVED',
+            monitor:{
+                project:{
+                    userId
+                }
+            }
+        }
+    });
+
+    const totalChecks =
+    await prisma.checkResult.count({
+        where:{
+            monitor:{
+                project:{
+                    userId
+                }
+            }
+        }
+    });
+
+    const projectsData =
+    await prisma.project.findMany({
+        where:{
+            userId
+        },
+        include:{
+            _count:{
+                select:{
+                    monitors:true
+                }
+            }
+        },
+        orderBy:{
+            createdAt:"desc"
+        }
+    });
+
     const projects = projectsData.map(project => ({
         id: project.id,
         name: project.name,
@@ -36,7 +80,6 @@ const getOverview = async (userId) => {
         status: project._count.monitors > 0 ? "Active" : "Draft"
     }));
 
-    // 3. Return the payload contract structured for the frontend
     return {
         stats: {
             totalProjects,
@@ -47,9 +90,9 @@ const getOverview = async (userId) => {
         },
         projects
     };
+
 };
 
-// Exporting using 'getOverview' to align with dashboard.controller.js
 module.exports = {
     getOverview
 };
