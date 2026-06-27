@@ -5,7 +5,7 @@ const prisma = require("./src/config/prisma");
 const {startMonitorJob} = require('./src/jobs/monitor.job');
 const {startCleanupJob} = require('./src/jobs/cleanup.job');
 
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 async function startServer() {
     try {
@@ -18,9 +18,7 @@ async function startServer() {
         startCleanupJob();
 
         app.listen(PORT, () => {
-            console.log(
-                `Server running on http://localhost:${PORT}`
-            );
+            console.log(`Server running on http://0.0.0.0:${PORT}`);
         });
 
     } catch (error) {

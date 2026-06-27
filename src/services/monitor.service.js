@@ -61,6 +61,16 @@ const updateMonitor = async(
         throw new AppError('Monitor not found',404);
     }
 
+    if(monitor.lastEditedAt) {
+        const timeDiff = new Date() - new Date(monitor.lastEditedAt);
+        const hoursDiff = timeDiff / (1000 * 60 * 60);
+        
+        if (hoursDiff < 24) {
+            const hoursLeft = Math.ceil(24 - hoursDiff);
+            throw new AppError(`Action locked. You can edit this monitor again in ${hoursLeft} hours.`, 403);
+        }
+    }
+
     if(updateMonitorData.name){
 
         const existingMonitor = await prisma.monitor.findFirst({
@@ -85,11 +95,13 @@ const updateMonitor = async(
         where: {
             id: monitorId
         },
-        data: updateMonitorData,
+        data: {
+            ...updateMonitorData,
+            lastEditedAt: new Date()
+        },
         select: monitorSelect
     });
 };
-
 const getMonitors = async(userId, projectId) => {
 
     const project = await prisma.project.findFirst({

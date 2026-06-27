@@ -7,6 +7,9 @@ const monitorRoutes = require("./routes/monitor.route");
 const monitorCheckerRoutes =require('./routes/monitorChecker.route');
 const incidentRoutes = require('./routes/incident.route');
 const dashboardRoutes = require('./routes/dashboard.route');
+const telemetryRoutes = require('./routes/telemetry.route');
+const profileAnalyticsRoutes = require('./routes/profileAnalytics.route');
+
 
 const errorMiddleware = require("./middleware/error.middleware");
 const apiLimiter = require('./middleware/rateLimiter');
@@ -24,9 +27,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 
 //Rate Limiters
-app.use('/api', apiLimiter);
+//app.use('/api', apiLimiter);
 app.use('/api/v1/auth/login',authLimiter);
 app.use('/api/v1/auth/register',authLimiter);
+
 
 // Health Check
 app.get("/", (req, res) => {
@@ -45,6 +49,8 @@ app.use("/api/v1",monitorRoutes);
 app.use('/api/v1', monitorCheckerRoutes);
 app.use('/api/v1', incidentRoutes);
 app.use('/api/v1',dashboardRoutes);
+app.use('/api/v1', telemetryRoutes);
+app.use('/api/v1',profileAnalyticsRoutes);
 
 
 // 404 Handler

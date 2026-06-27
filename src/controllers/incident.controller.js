@@ -4,11 +4,12 @@ require('../services/incident.service');
 const getIncidents = async(req,res,next) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    try{
+    const monitorId = req.query.monitorId; // Extract from URL
 
-        const incidents =
-        await incidentService.getIncidents(
+    try{
+        const incidents = await incidentService.getIncidents(
             req.user.id,
+            monitorId, // Pass it to the service here
             page,
             limit
         );
@@ -21,7 +22,6 @@ const getIncidents = async(req,res,next) => {
     }catch(error){
         next(error);
     }
-
 };
 
 const getIncidentById = async(req,res,next) => {

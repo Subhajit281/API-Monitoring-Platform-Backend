@@ -96,22 +96,38 @@ const handleMonitorResult = async(monitorId,success) => {
     ); 
 };
 
-const getIncidents = async(userId,page=1,limit=10) => {
+
+const getIncidents = async(userId, monitorId = null, page=1, limit=50) => { // Increased default limit to 50
     const skip = (page - 1) * limit;
+    
+    const whereClause = {
+        monitor: {
+            project: {
+                userId
+            }
+        }
+    };
+
+    if (monitorId) {
+        whereClause.monitorId = monitorId;
+    }
+
     return await prisma.incident.findMany({
-        where:{
-            monitor:{
-                project:{
-                    userId
+        where: whereClause,
+        include: {
+            monitor: {
+                include: {
+                    project: true 
                 }
             }
         },
-        include:{
-            monitor:true
-        },
-        orderBy:{
-            startedAt:'desc'
-        }
+        // THIS IS THE MAGIC FIX:
+        orderBy: [
+            { status: 'asc' },      // Forces 'OPEN' incidents to the absolute top
+            { startedAt: 'desc' }   // Then sorts the remaining by newest first
+        ],
+        skip: skip,
+        take: limit
     });
 };
 
