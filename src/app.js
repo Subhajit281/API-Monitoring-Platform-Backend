@@ -33,10 +33,21 @@ app.use('/api/v1/auth/register',authLimiter);
 
 
 // Health Check
+// Root Route
 app.get("/", (req, res) => {
+    res.json({
+        success: true,
+        message: "Welcome to UpFlow API",
+    });
+});
+
+// Health Check Route
+app.get("/health", (req, res) => {
     res.status(200).json({
         success: true,
-        message: "API is running",
+        status: "UP",
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
     });
 });
 
