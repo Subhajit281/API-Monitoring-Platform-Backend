@@ -3,10 +3,13 @@ const AppError = require("../utils/AppError");
 
 // Initialize the SMTP transporter (using Gmail)
 const transporter = nodemailer.createTransport({
-    service: 'gmail', 
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // true only for port 465
+    family: 4,     // Force IPv4
     auth: {
         user: process.env.SMTP_EMAIL,
-        pass: process.env.SMTP_PASSWORD 
+        pass: process.env.SMTP_PASSWORD
     }
 });
 

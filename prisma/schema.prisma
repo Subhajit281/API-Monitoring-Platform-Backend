@@ -12,11 +12,11 @@ model User {
   name                   String
   email                  String                  @unique
   password               String
-   otp                    String?
-  otpExpire              DateTime?
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
   isVerified             Boolean                 @default(false)
+  otp                    String?
+  otpExpire              DateTime?
   notificationPreference NotificationPreference?
   projects               Project[]
 }
