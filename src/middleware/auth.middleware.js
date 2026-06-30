@@ -31,12 +31,14 @@ const authMiddleware = async(req,res,next) => {
         req.user = user;
         next();
     }
-    catch(error){
-        return res.status(401).json({
-            success:false,
-            message:'Invalid Token'
-        })
-    }
+    catch (error) {
+    console.error("JWT VERIFY ERROR:", error);
+
+    return res.status(401).json({
+        success: false,
+        message: "Invalid Token"
+    });
+}
 };
 
 module.exports = authMiddleware;
