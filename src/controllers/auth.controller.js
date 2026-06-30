@@ -1,6 +1,7 @@
 const authService = require('../services/auth.service');
 const jwt = require('jsonwebtoken');
 const { sendOtpEmail } = require('../services/notification.service');
+const oauthService = require("../services/oauth.service");
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 
@@ -314,6 +315,29 @@ const verifyOtp = async (req, res, next) => {
     }
 };
 
+
+const googleLogin = async (req, res, next) => {
+    try {
+        const url = await oauthService.getGoogleAuthUrl();
+        res.redirect(url);
+    } catch (err) {
+        next(err);
+    }
+};
+
+const googleCallback = async (req, res, next) => {
+    try {
+        const { accessToken } = await oauthService.handleGoogleCallback(req.query);
+
+        return res.redirect(
+            `${process.env.FRONTEND_URL}/auth/oauth/callback?token=${accessToken}`
+        );
+    } catch (error) {
+        next(error);
+    }
+};;
+
+
 module.exports = {
     registerUser,
     loginUser,
@@ -324,5 +348,7 @@ module.exports = {
     requestOtp, 
     verifyOtp,
     sendRegistrationOtp,
-    verifyRegistrationOtp
+    verifyRegistrationOtp,
+    googleLogin,
+    googleCallback
 };

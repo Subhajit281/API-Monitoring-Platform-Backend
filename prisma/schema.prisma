@@ -11,10 +11,12 @@ model User {
   id                     String                  @id @default(uuid())
   name                   String
   email                  String                  @unique
-  password               String
+  password               String?
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
   isVerified             Boolean                 @default(false)
+  googleSub              String?                 @unique
+  githubId               String?                 @unique
   otp                    String?
   otpExpire              DateTime?
   notificationPreference NotificationPreference?

@@ -3,6 +3,14 @@ const prisma = require('../config/prisma');
 const jwt = require('jsonwebtoken');
 const AppError = require("../utils/AppError");
 
+const generateToken = (user) => {
+    return jwt.sign(
+        { id: user.id },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+    );
+};
+
 const registerUser = async(userData) => {
     //console.log('A');
     const existingUser = await prisma.user.findUnique({
@@ -53,9 +61,7 @@ const loginUser = async (email, password) => {
         throw new AppError('Invalid Credentials', 401);
     }
 
-    const token = jwt.sign(
-        { id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' }
-    );
+    const token = generateToken(user);
 
     return {
         token,
@@ -180,5 +186,6 @@ module.exports = {
     updateUser,
     deleteUser,
     changePassword,
-    getUserProfile
+    getUserProfile,
+    generateToken
 };

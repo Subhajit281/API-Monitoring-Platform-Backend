@@ -10,7 +10,9 @@ const {
     deleteUser,
     changePassword,
     requestOtp,
-    verifyOtp
+    verifyOtp,
+    googleLogin,
+    googleCallback
 } = require('../controllers/auth.controller');
 
 const authMiddleware = require('../middleware/auth.middleware');
@@ -70,5 +72,7 @@ router.delete(
     authMiddleware,
     deleteUser
 );
+router.get("/google", googleLogin);
+router.get("/google/callback", googleCallback);
 
 module.exports = router;

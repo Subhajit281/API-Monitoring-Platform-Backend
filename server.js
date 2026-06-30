@@ -4,6 +4,8 @@ const app = require("./src/app");
 const prisma = require("./src/config/prisma");
 const { startMonitorJob } = require("./src/jobs/monitor.job");
 const { startCleanupJob } = require("./src/jobs/cleanup.job");
+const redis= require("./src/config/redis.js");
+
 
 const PORT = 5000;
 
@@ -46,5 +48,14 @@ async function startServer() {
         process.exit(1);
     }
 }
+
+async function testRedis() {
+  await redis.set("test", "Hello Redis");
+  const value = await redis.get("test");
+
+  console.log("Redis Test:", value);
+}
+
+testRedis();
 
 startServer();
