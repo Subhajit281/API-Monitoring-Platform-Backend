@@ -7,7 +7,7 @@ const { startCleanupJob } = require("./src/jobs/cleanup.job");
 const redis= require("./src/config/redis.js");
 
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 const BACKEND_URL = process.env.BACKEND_URL;
 const PING_INTERVAL = 30 * 1000; // 30 seconds
