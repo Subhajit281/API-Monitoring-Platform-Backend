@@ -12,20 +12,21 @@ const PORT = process.env.PORT || 8000;
 const BACKEND_URL = process.env.BACKEND_URL;
 const PING_INTERVAL = 30 * 1000; // 30 seconds
 
-function startKeepAlive() {
-    if (process.env.NODE_ENV !== "production" || !BACKEND_URL) return;
+// to keep render prevented from sleep
+// function startKeepAlive() {
+//     if (process.env.NODE_ENV !== "production" || !BACKEND_URL) return;
 
-    setInterval(async () => {
-        try {
-            const res = await fetch(`${BACKEND_URL}/health`);
-            console.log(`[keep-alive] Ping successful: ${res.status}`);
-        } catch (err) {
-            console.error("[keep-alive] Ping failed:", err.message);
-        }
-    }, PING_INTERVAL);
+//     setInterval(async () => {
+//         try {
+//             const res = await fetch(`${BACKEND_URL}/health`);
+//             console.log(`[keep-alive] Ping successful: ${res.status}`);
+//         } catch (err) {
+//             console.error("[keep-alive] Ping failed:", err.message);
+//         }
+//     }, PING_INTERVAL);
 
-    console.log("[keep-alive] Started (30s interval)");
-}
+//     console.log("[keep-alive] Started (30s interval)");
+// }
 
 async function startServer() {
     try {
