@@ -3,7 +3,7 @@ const prisma = require('../config/prisma');
 const monitorCheckerService = require('../services/monitorChecker.service');
 
 const startMonitorJob = () =>{
-    cron.schedule('*/30 * * * * *',async()=>{
+    cron.schedule('0 * * * *', async () => {
         try{
             console.log(
                 'Running Monitor Checks...',
